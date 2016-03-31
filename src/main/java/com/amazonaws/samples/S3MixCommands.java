@@ -14,6 +14,19 @@ import com.amazonaws.services.s3.model.S3Object;
 
 public class S3MixCommands
 {
+    JavaRobotExample robot = getJavaRobotExample();
+    public JavaRobotExample getJavaRobotExample()
+    {
+       try
+       {
+         return new JavaRobotExample();
+       }catch(Exception ex)
+       {
+         return null;
+       }
+       
+    }
+
     public void fetchCommands() throws InterruptedException, IOException
     {
     /*
@@ -39,6 +52,7 @@ public class S3MixCommands
         }
         catch(Exception ex)
         {
+	    ex.printStackTrace();
             return;
         }
         String commandString = getCommandFromS3(object.getObjectContent());
@@ -47,7 +61,16 @@ public class S3MixCommands
             return;
         }
 
-        // EXECUTE COMMAND HERE
+        try
+        {
+	    InputStream objectData = object.getObjectContent();
+            // EXECUTE COMMAND HERE
+            robot.execute(getCommandFromS3(objectData));
+        }
+        catch(Exception ex)
+        {
+            return;
+        }
 
         System.out.println("Executing macro command for " + commandString);
 
