@@ -1,0 +1,4 @@
+AwsCredentials.properties
+.idea
+target/
+*.iml
