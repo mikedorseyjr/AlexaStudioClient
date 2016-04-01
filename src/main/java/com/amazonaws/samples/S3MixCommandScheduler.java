@@ -21,8 +21,11 @@ public class S3MixCommandScheduler extends TimerTask
         }
         catch( IOException ex)
         {
+			//TODO: Replace this with log.error
             System.out.println("Got an exception when fetching commands. Who cares?!");
         }
+		
+		//TODO: Replace this with log.debug
         System.out.println("Just fetched commands. Sleeping....");
     }
 

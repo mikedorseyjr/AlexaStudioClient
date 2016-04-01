@@ -11,19 +11,23 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+import com.amazon.macroexecutor.MacroExecutor;
 
 public class S3MixCommands
 {
-    JavaRobotExample robot = getJavaRobotExample();
-    public JavaRobotExample getJavaRobotExample()
+    MacroExecutor macroExecutor = getMacroExecutor();
+    private MacroExecutor getMacroExecutor()
     {
-       try
-       {
-         return new JavaRobotExample();
-       }catch(Exception ex)
-       {
-         return null;
-       }
+	   try
+	   {
+			return new MacroExecutor();
+	   }
+	   catch(Exception ex)
+	   {
+			//TODO: Add log.error
+			//TODO: Exit with error.
+			return null;
+	   }
        
     }
 
@@ -44,6 +48,8 @@ public class S3MixCommands
 
         String bucketName = "mixstudiocommands";
         String key = "commands";
+		
+		//TODO: Replace this with log.debug
         System.out.println("Downloading an object");
         S3Object object;
         try
@@ -52,7 +58,8 @@ public class S3MixCommands
         }
         catch(Exception ex)
         {
-	    ex.printStackTrace();
+			//TODO: Replace this with log.error
+			//ex.printStackTrace();
             return;
         }
         String commandString = getCommandFromS3(object.getObjectContent());
@@ -63,19 +70,22 @@ public class S3MixCommands
 
         try
         {
-	    InputStream objectData = object.getObjectContent();
-            // EXECUTE COMMAND HERE
-            robot.execute(getCommandFromS3(objectData));
+			InputStream objectData = object.getObjectContent();
+			//TODO: Replace this with log.debug
+            System.out.println("Executing macro command for " + commandString);
+            macroExecutor.execute(commandString);
         }
         catch(Exception ex)
         {
+			//TODO: Replace this with log.error
+			//ex.printStackTrace();
             return;
-        }
-
-        System.out.println("Executing macro command for " + commandString);
-
-        // Delete file from S3
-        s3.deleteObject(bucketName, key);
+        } 
+		finally 
+		{
+			// Delete file from S3
+			s3.deleteObject(bucketName, key);
+		} 
     }
 
     private String getCommandFromS3(InputStream input) throws IOException
